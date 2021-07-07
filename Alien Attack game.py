@@ -62,6 +62,20 @@ y_speed = 0
 background_image = pygame.image.load("space_image.jpg").convert()
 laser_sound = pygame.mixer.Sound("laser5.ogg")
 
+class Character (): # name of class
+    name = "Martin"
+    max_life = 100
+    current_life = 100
+    score = 0
+
+def display_character(my_character):
+    print(my_character.name, my_character.max_life, my_character.current_life, my_character.score)
+
+my_player=Character() # creates an instance of the class (object)
+# my_player.name = "Eric" allows us to change the name
+
+display_character(my_player)
+
 pygame.display.set_caption("Alien Attack")
 
 # Loop until the user clicks the close button.
