@@ -53,6 +53,13 @@ def draw_person(screen,x,y):
     pygame.draw.line(screen, RED, [100-95+x, 90-83+y], [96-95+x, 100-83+y], 2) # Arms
 
 
+x_coord = 10
+y_coord = 10
+
+x_speed = 0
+y_speed = 0
+
+background_image = pygame.image.load("space_image.jpg").convert()
 
 pygame.display.set_caption("Alien Attack")
 
@@ -69,6 +76,26 @@ while not done:
         if event.type == pygame.QUIT:
             done = True
 
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                x_speed = -3
+            if event.key == pygame.K_RIGHT:
+                x_speed = 3
+            if event.key == pygame.K_UP:
+                y_speed = -3
+            if event.key == pygame.K_DOWN:
+                y_speed = 3
+
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_LEFT:
+                x_speed = 0
+            if event.key == pygame.K_RIGHT:
+                x_speed = 0
+            if event.key == pygame.K_UP:
+                y_speed = 0
+            if event.key == pygame.K_DOWN:
+                y_speed = 0
+
     # --- Game logic should go here
     rect_x += rect_change_x
     rect_y += rect_change_y
@@ -79,6 +106,10 @@ while not done:
     if rect_y > 449 or rect_y < 0:
         rect_change_y *= -1
 
+    x_coord += x_speed
+    y_coord += y_speed
+
+
     # --- Screen-clearing code goes here
 
     # Here, we clear the screen to white. Don't put other drawing commands
@@ -86,29 +117,32 @@ while not done:
 
     # If you want a background image, replace this clear with blit'ing the
     # background image.
-    screen.fill(BLACK)
+    screen.blit(background_image,[0,0])
 
-    for item in star_list:
-        item[1] += 1
-        pygame.draw.circle(screen, WHITE, item, 2)
-        if item[1] > 500:
-            item[1] = random.randrange(-20,-5)
-            item[0] = random.randrange(700)
+    player_position = pygame.K.get_pos()
+    x=player_position[0]
+    y=player_position[1]
+    # for item in star_list:
+    #     item[1] += 1
+    #     pygame.draw.circle(screen, WHITE, item, 2)
+    #     if item[1] > 500:
+    #         item[1] = random.randrange(-20,-5)
+    #         item[0] = random.randrange(700)
 
     # --- Drawing code should go here
     pygame.draw.rect(screen, WHITE, [rect_x, rect_y, 50, 50],2)
-    draw_tree()
+    # draw_tree()
 
     # Draw multiple snowmen
-    draw_snowman(screen,200,100)
-    draw_snowman(screen, 80, 40)
-    draw_snowman(screen, 25, 90)
+    # draw_snowman(screen,200,100)
+    # draw_snowman(screen, 80, 40)
+    # draw_snowman(screen, 25, 90)
 
-    draw_person(screen,200,200)
-    draw_person(screen, 0, 0)
-    draw_person(screen, 400, 400)
-    draw_person(screen, 500, 500)
-    draw_person(screen, 600, 400)
+    # draw_person(screen,200,200)
+    draw_person(screen, x_coord , y_coord )
+    # draw_person(screen, 400, 400)
+    # draw_person(screen, 500, 500)
+    # draw_person(screen, 600, 400)
 
     # --- Go ahead and update the screen with what we've drawn.
     pygame.display.flip()
