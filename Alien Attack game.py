@@ -60,6 +60,7 @@ x_speed = 0
 y_speed = 0
 
 background_image = pygame.image.load("space_image.jpg").convert()
+laser_sound = pygame.mixer.Sound("laser5.ogg")
 
 pygame.display.set_caption("Alien Attack")
 
@@ -96,6 +97,9 @@ while not done:
             if event.key == pygame.K_DOWN:
                 y_speed = 0
 
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            laser_sound.play()
+
     # --- Game logic should go here
     rect_x += rect_change_x
     rect_y += rect_change_y
@@ -117,11 +121,8 @@ while not done:
 
     # If you want a background image, replace this clear with blit'ing the
     # background image.
-    screen.blit(background_image,[0,0])
+    screen.blit(background_image,[0, 0])
 
-    player_position = pygame.K.get_pos()
-    x=player_position[0]
-    y=player_position[1]
     # for item in star_list:
     #     item[1] += 1
     #     pygame.draw.circle(screen, WHITE, item, 2)
