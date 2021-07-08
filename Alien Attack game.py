@@ -6,6 +6,8 @@
 import random
 import numpy as np
 import pygame
+import matplotlib.pyplot as plt
+import  numpy as np
 
 # Define some colors
 BLACK = (0, 0, 0)
@@ -13,6 +15,17 @@ WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 BROWN = (180, 0, 30)
+
+file = open("super_villains.txt")
+
+name_list = []
+for line in file:
+    line = line.strip()
+    name_list.append(line)
+
+file.close()
+name_list[0]
+
 
 
 class Alien(pygame.sprite.Sprite):
@@ -27,7 +40,40 @@ class Alien(pygame.sprite.Sprite):
         # Create a rectangle - set it to whatever the image is
         self.rect = self.image.get_rect()
 
+    def reset_pos(self):
+        self.rect.y = -20
+        self.rect.x = random.randrange(680)
 
+    def update(self):
+        self.rect.y += 1
+
+        if self.rect.y > 550:
+            self.reset_pos()
+
+
+class Player(Alien):
+    def update(self):
+        self.rect.x = self.rect.x + x_speed
+        self.rect.y = self.rect.y + y_speed
+
+
+class Bullet(pygame.sprite.Sprite):
+
+    def __init__(self):
+        # Call the parent class (Sprite) constructor
+        pygame.sprite.Sprite.__init__(self)
+
+        self.image = pygame.Surface([5, 5])
+        self.image.fill(RED)
+
+        self.rect = self.image.get_rect()
+
+    def update(self):
+        # move the bullet up 5 pixels
+        self.rect.y -= 5
+
+
+# Initialise the game
 pygame.init()
 
 # Set the width and height of the screen [width, height]
@@ -40,8 +86,11 @@ alien_list = pygame.sprite.Group()
 # List of all aliens and the player as well
 all_sprites_list = pygame.sprite.Group()
 
+# List of each bullet
+bullet_list = pygame.sprite.Group()
+
 for i in range(50):
-    alien = Alien(RED,20,20)
+    alien = Alien(RED, 20, 20)
 
     # set a random location for the aliens
     alien.rect.x = random.randrange(680)
@@ -51,13 +100,9 @@ for i in range(50):
     alien_list.add(alien)
     all_sprites_list.add(alien)
 
-
-
-
-
 # Initiate the positions of objects
-rect_x = 50 # position of rectangle
-rect_y = 50 # position of rectangle
+rect_x = 50  # position of rectangle
+rect_y = 50  # position of rectangle
 
 rect_change_x = 5  # vector direction and speed
 rect_change_y = 3  # vector direction and speed
@@ -66,7 +111,7 @@ star_list = []
 for i in range(50):
     x = random.randrange(0, 700)
     y = random.randrange(0, 500)
-    star_list.append([x,y])
+    star_list.append([x, y])
 
 
 def draw_tree():
@@ -74,22 +119,24 @@ def draw_tree():
     pygame.draw.polygon(screen, GREEN, [[150, 400], [75, 250], [0, 400]])
     pygame.draw.polygon(screen, GREEN, [[140, 350], [75, 230], [10, 350]])
 
+
 def draw_snowman(screen, x, y):
-    pygame.draw.ellipse(screen, WHITE, [35+x, 0+y, 25, 25])
-    pygame.draw.ellipse(screen, WHITE, [23+x, 20+y, 50, 50])
-    pygame.draw.ellipse(screen, WHITE, [0+x, 65+y, 100, 100])
-
-def draw_person(screen,x,y):
-    pygame.draw.ellipse(screen, WHITE, [96-95+x, 83-83+y, 10, 10], 0) # Head
-    pygame.draw.line(screen, WHITE, [100-95+x, 100-83+y], [105-95+x, 110-83+y], 2) # Legs
-    pygame.draw.line(screen, WHITE, [100-95+x, 100-83+y], [95-95+x, 110-83+y], 2) # Legs
-    pygame.draw.line(screen, RED, [100-95+x, 100-83+y], [100-95+x, 90-83+y], 2) # Body
-    pygame.draw.line(screen, RED, [100-95+x, 90-83+y], [104-95+x, 100-83+y], 2) # Arms
-    pygame.draw.line(screen, RED, [100-95+x, 90-83+y], [96-95+x, 100-83+y], 2) # Arms
+    pygame.draw.ellipse(screen, WHITE, [35 + x, 0 + y, 25, 25])
+    pygame.draw.ellipse(screen, WHITE, [23 + x, 20 + y, 50, 50])
+    pygame.draw.ellipse(screen, WHITE, [0 + x, 65 + y, 100, 100])
 
 
-x_coord = 10
-y_coord = 10
+def draw_person(screen, x, y):
+    pygame.draw.ellipse(screen, WHITE, [96 - 95 + x, 83 - 83 + y, 10, 10], 0)  # Head
+    pygame.draw.line(screen, WHITE, [100 - 95 + x, 100 - 83 + y], [105 - 95 + x, 110 - 83 + y], 2)  # Legs
+    pygame.draw.line(screen, WHITE, [100 - 95 + x, 100 - 83 + y], [95 - 95 + x, 110 - 83 + y], 2)  # Legs
+    pygame.draw.line(screen, RED, [100 - 95 + x, 100 - 83 + y], [100 - 95 + x, 90 - 83 + y], 2)  # Body
+    pygame.draw.line(screen, RED, [100 - 95 + x, 90 - 83 + y], [104 - 95 + x, 100 - 83 + y], 2)  # Arms
+    pygame.draw.line(screen, RED, [100 - 95 + x, 90 - 83 + y], [96 - 95 + x, 100 - 83 + y], 2)  # Arms
+
+
+x_coord = 350
+y_coord = 250
 
 x_speed = 0
 y_speed = 0
@@ -123,12 +170,14 @@ class Ball():
     def draw(self, screen):
         pygame.draw.circle(screen, self.color, [self.x, self.y], self.size)
 
+
 theBall = Ball()
 theBall.x = 100
 theBall.y = 100
 theBall.change_x = 2
 theBall.change_y = 1
-theBall.color = [255,0,0]
+theBall.color = [255, 0, 0]
+
 
 class Boat():
     def __init__(self):
@@ -154,13 +203,17 @@ class Boat():
 enterprise2 = Boat()
 enterprise2.tonnage = 100
 
+
 # inheritance - each of the attributes from the Boat class is inherited by the submarine class
 # child class
 class Submarine(Boat):
     def submerge(self):
         print("submerge")
 
-player = x_coord
+
+player = Player(GREEN, 20, 20)
+player.rect.x = 350
+player.rect.y = 250
 all_sprites_list.add(player)
 
 pygame.display.set_caption("Alien Attack")
@@ -172,6 +225,10 @@ done = False
 clock = pygame.time.Clock()
 
 life = 100
+score = 0
+
+life_list = []
+score_list = []
 
 # -------- Main Program Loop -----------
 while not done:
@@ -181,14 +238,19 @@ while not done:
             done = True
 
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
+            if event.key == pygame.K_LEFT and x_coord > 5:
                 x_speed = -3
-            if event.key == pygame.K_RIGHT:
+            elif event.key == pygame.K_RIGHT and x_coord < 685:
                 x_speed = 3
-            if event.key == pygame.K_UP:
+            else:
+                x_speed = 0
+            if event.key == pygame.K_UP and y_coord > 5:
                 y_speed = -3
-            if event.key == pygame.K_DOWN:
+            elif event.key == pygame.K_DOWN and y_coord < 470:
                 y_speed = 3
+            else:
+                y_speed = 0
+
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT:
@@ -201,7 +263,16 @@ while not done:
                 y_speed = 0
 
         if event.type == pygame.MOUSEBUTTONDOWN:
+            # Make a sound
             laser_sound.play()
+            # Fire a bullet
+            bullet = Bullet()
+            # Set the bullet so it is where the player is
+            bullet.rect.x = player.rect.x
+            bullet.rect.y = player.rect.y
+            # Add the bullet to the lists
+            all_sprites_list.add(bullet)
+            bullet_list.add(bullet)
 
     # --- Game logic should go here
     rect_x += rect_change_x
@@ -225,22 +296,40 @@ while not done:
 
     # If you want a background image, replace this clear with blit'ing the
     # background image.
-    screen.blit(background_image,[0, 0])
+    screen.blit(background_image, [0, 0])
 
-    # pos_x =player.left
-    # pos_y =player.top
+    # Call the update() method on all the sprites
+    all_sprites_list.update()
 
-    # Collisions
-    alien_hit_list = pygame.sprite.spritecollide(player, alien_list,True)
+    # Call the mechanics of each bullet
+    for bullet in bullet_list:
+
+        # See if it hit an alien
+        alien_hit_list = pygame.sprite.spritecollide(bullet, alien_list, True)
+
+        # For each alien hit, remove the bullet and add to the score
+        for alien in alien_hit_list:
+            bullet_list.remove(bullet)
+            all_sprites_list.remove(bullet)
+            score += 100
+            print("Score :", score)
+
+        # Remove the bullet if it flies off the screen
+        if bullet.rect.y < -10:
+            bullet_list.remove(bullet)
+            all_sprites_list.remove(bullet)
+
+    # Collisions with the character
+    alien_hit_list = pygame.sprite.spritecollide(player, alien_list, False)
 
     # Check the list of collisions
-    if len(alien_hit_list) > 0:
-        life -= len(alien_hit_list)
-        print(life)
+    for alien in alien_hit_list:
+        life -= len(alien_hit_list) * 10
+        print("Life: ", life)
+        alien.reset_pos()
 
     # Draw the sprites
     all_sprites_list.draw(screen)
-
 
     # for item in star_list:
     #     item[1] += 1
@@ -250,7 +339,7 @@ while not done:
     #         item[0] = random.randrange(700)
 
     # --- Drawing code should go here
-    pygame.draw.rect(screen, WHITE, [rect_x, rect_y, 50, 50],2)
+    pygame.draw.rect(screen, WHITE, [rect_x, rect_y, 50, 50], 2)
     theBall.draw(screen)
     # draw_tree()
 
@@ -260,12 +349,10 @@ while not done:
     # draw_snowman(screen, 25, 90)
 
     # draw_person(screen,200,200)
-    draw_person(screen, x_coord , y_coord )
+    draw_person(screen, x_coord, y_coord)
     # draw_person(screen, 400, 400)
     # draw_person(screen, 500, 500)
     # draw_person(screen, 600, 400)
-
-
 
     # --- Go ahead and update the screen with what we've drawn.
     pygame.display.flip()
@@ -273,6 +360,14 @@ while not done:
     # --- Limit to 60 frames per second
     clock.tick(60)
 
+
+    life_list.append(life)
+    score_list.append(score)
 # Close the window and quit.
 pygame.quit()
 
+plt.plot(life_list)
+plt.plot(score_list)
+plt.show()
+
+len(life_list)
