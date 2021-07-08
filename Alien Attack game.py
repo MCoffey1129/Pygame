@@ -14,11 +14,46 @@ GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 BROWN = (180, 0, 30)
 
+
+class Alien(pygame.sprite.Sprite):
+    def __init__(self, color, width, height):
+        # call the parent
+        pygame.sprite.Sprite.__init__(self)
+
+        # Blank surface to draw on
+        self.image = pygame.Surface([width, height])
+        self.image.fill(color)
+
+        # Create a rectangle - set it to whatever the image is
+        self.rect = self.image.get_rect()
+
+
 pygame.init()
 
 # Set the width and height of the screen [width, height]
 size = (700, 500)
 screen = pygame.display.set_mode(size)
+
+# List of aliens
+alien_list = pygame.sprite.Group()
+
+# List of all aliens and the player as well
+all_sprites_list = pygame.sprite.Group()
+
+for i in range(50):
+    alien = Alien(RED,20,20)
+
+    # set a random location for the aliens
+    alien.rect.x = random.randrange(680)
+    alien.rect.y = random.randrange(480)
+
+    # Add the alien to the list of objects
+    alien_list.add(alien)
+    all_sprites_list.add(alien)
+
+
+
+
 
 # Initiate the positions of objects
 rect_x = 50 # position of rectangle
@@ -62,19 +97,71 @@ y_speed = 0
 background_image = pygame.image.load("space_image.jpg").convert()
 laser_sound = pygame.mixer.Sound("laser5.ogg")
 
-class Character (): # name of class
-    name = "Martin"
-    max_life = 100
-    current_life = 100
-    score = 0
 
-def display_character(my_character):
-    print(my_character.name, my_character.max_life, my_character.current_life, my_character.score)
+class Ball():
+    def __init__(self):
+        # --- Class Attributes ---
+        # Ball position
+        self.x = 0
+        self.y = 0
 
-my_player=Character() # creates an instance of the class (object)
-# my_player.name = "Eric" allows us to change the name
+        # Ball's vector
+        self.change_x = 0
+        self.change_y = 0
 
-display_character(my_player)
+        # Ball size
+        self.size = 10
+
+        # Ball color
+        self.color = [255, 255, 255]
+
+    # --- Class Methods ---
+    def move(self):
+        self.x += self.change_x
+        self.y += self.change_y
+
+    def draw(self, screen):
+        pygame.draw.circle(screen, self.color, [self.x, self.y], self.size)
+
+theBall = Ball()
+theBall.x = 100
+theBall.y = 100
+theBall.change_x = 2
+theBall.change_y = 1
+theBall.color = [255,0,0]
+
+class Boat():
+    def __init__(self):
+        self.tonnage = 0
+        self.name = ""
+        self.is_docked = True
+
+    def dock(self):
+        if self.is_docked:
+            print("You are already docked.")
+        else:
+            self.is_docked = True
+            print("Docking")
+
+    def undock(self):
+        if not self.is_docked:
+            print("You aren't docked.")
+        else:
+            self.is_docked = False
+            print("Undocking")
+
+
+enterprise2 = Boat()
+enterprise2.tonnage = 100
+
+# inheritance - each of the attributes from the Boat class is inherited by the submarine class
+# child class
+class Submarine(Boat):
+    def submerge(self):
+        print("submerge")
+
+player = x_coord
+all_sprites_list.add(player)
 
 pygame.display.set_caption("Alien Attack")
 
@@ -83,6 +170,8 @@ done = False
 
 # Used to manage how fast the screen updates
 clock = pygame.time.Clock()
+
+life = 100
 
 # -------- Main Program Loop -----------
 while not done:
@@ -127,6 +216,7 @@ while not done:
     x_coord += x_speed
     y_coord += y_speed
 
+    theBall.move()
 
     # --- Screen-clearing code goes here
 
@@ -137,6 +227,21 @@ while not done:
     # background image.
     screen.blit(background_image,[0, 0])
 
+    # pos_x =player.left
+    # pos_y =player.top
+
+    # Collisions
+    alien_hit_list = pygame.sprite.spritecollide(player, alien_list,True)
+
+    # Check the list of collisions
+    if len(alien_hit_list) > 0:
+        life -= len(alien_hit_list)
+        print(life)
+
+    # Draw the sprites
+    all_sprites_list.draw(screen)
+
+
     # for item in star_list:
     #     item[1] += 1
     #     pygame.draw.circle(screen, WHITE, item, 2)
@@ -146,6 +251,7 @@ while not done:
 
     # --- Drawing code should go here
     pygame.draw.rect(screen, WHITE, [rect_x, rect_y, 50, 50],2)
+    theBall.draw(screen)
     # draw_tree()
 
     # Draw multiple snowmen
@@ -159,6 +265,8 @@ while not done:
     # draw_person(screen, 500, 500)
     # draw_person(screen, 600, 400)
 
+
+
     # --- Go ahead and update the screen with what we've drawn.
     pygame.display.flip()
 
@@ -167,3 +275,4 @@ while not done:
 
 # Close the window and quit.
 pygame.quit()
+
