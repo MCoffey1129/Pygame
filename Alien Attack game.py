@@ -94,7 +94,7 @@ for i in range(50):
 
     # set a random location for the aliens
     alien.rect.x = random.randrange(680)
-    alien.rect.y = random.randrange(480)
+    alien.rect.y = random.randrange(400,900)
 
     # Add the alien to the list of objects
     alien_list.add(alien)
@@ -233,14 +233,16 @@ score_list = []
 font = pygame.font.Font(None, 25)
 frame_count = 0
 frame_rate = 60
-start_time = 300
+start_time = 180
+minutes = 1000
+seconds = 1000
 
 
 # -------- Main Program Loop -----------
 while not done:
     # --- Main event loop
     for event in pygame.event.get():
-        if event.type == pygame.QUIT or life <=0:
+        if event.type == pygame.QUIT or life <=0 or (minutes <= 0 and seconds <= 0):
             done = True
 
         if event.type == pygame.KEYDOWN:
@@ -382,7 +384,7 @@ while not done:
     output_string4 = "Level :" + str(level)
 
     # Blit to the screen
-    text1 = font.render(output_string1, True, (255,0,0))
+    text1 = font.render(output_string1, True, (255, 0, 0))
     text2 = font.render(output_string2, True, (255, 0, 0))
     text3 = font.render(output_string3, True, (255, 0, 0))
     text4 = font.render(output_string4, True, (255, 0, 0))
