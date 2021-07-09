@@ -230,11 +230,17 @@ score = 0
 life_list = []
 score_list = []
 
+font = pygame.font.Font(None, 25)
+frame_count = 0
+frame_rate = 60
+start_time = 300
+
+
 # -------- Main Program Loop -----------
 while not done:
     # --- Main event loop
     for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+        if event.type == pygame.QUIT or life <=0:
             done = True
 
         if event.type == pygame.KEYDOWN:
@@ -354,12 +360,45 @@ while not done:
     # draw_person(screen, 500, 500)
     # draw_person(screen, 600, 400)
 
-    # --- Go ahead and update the screen with what we've drawn.
-    pygame.display.flip()
 
     # --- Limit to 60 frames per second
-    clock.tick(60)
+    # Calculate total seconds
+    total_seconds = start_time - (frame_count // frame_rate)
+    if total_seconds < 0:
+        total_seconds = 0
 
+    # Divide by 60 to get total minutes
+    minutes = total_seconds // 60
+
+    # Use modulus (remainder) to get seconds
+    seconds = total_seconds % 60
+
+    level = (score // 1000) + 1
+
+    # Use python string formatting to format in leading zeros
+    output_string1 = "Time left: {0:02}:{1:02}".format(minutes, seconds)
+    output_string2 = "Score :" + str(score)
+    output_string3 = "Life :" + str(life)
+    output_string4 = "Level :" + str(level)
+
+    # Blit to the screen
+    text1 = font.render(output_string1, True, (255,0,0))
+    text2 = font.render(output_string2, True, (255, 0, 0))
+    text3 = font.render(output_string3, True, (255, 0, 0))
+    text4 = font.render(output_string4, True, (255, 0, 0))
+
+    screen.blit(text1, [550, 10])
+    screen.blit(text2, [550, 30])
+    screen.blit(text3, [550, 50])
+    screen.blit(text4, [550, 70])
+
+    # ALL CODE TO DRAW SHOULD GO ABOVE THIS COMMENT
+    frame_count += 1
+
+    clock.tick(frame_rate)
+
+    # --- Go ahead and update the screen with what we've drawn.
+    pygame.display.flip()
 
     life_list.append(life)
     score_list.append(score)
@@ -370,4 +409,5 @@ plt.plot(life_list)
 plt.plot(score_list)
 plt.show()
 
-len(life_list)
+# score_list[len(score_list)-1]
+
