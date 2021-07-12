@@ -16,17 +16,6 @@ GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 BROWN = (180, 0, 30)
 
-file = open("super_villains.txt")
-
-name_list = []
-for line in file:
-    line = line.strip()
-    name_list.append(line)
-
-file.close()
-name_list[0]
-
-
 
 class Alien(pygame.sprite.Sprite):
     def __init__(self, color, width, height):
@@ -46,6 +35,7 @@ class Alien(pygame.sprite.Sprite):
 
     def update(self):
         self.rect.y += 1
+        self.rect.x += random.randrange(-8,8,1)
 
         if self.rect.y > 550:
             self.reset_pos()
@@ -94,7 +84,7 @@ for i in range(50):
 
     # set a random location for the aliens
     alien.rect.x = random.randrange(680)
-    alien.rect.y = random.randrange(400,900)
+    alien.rect.y = random.randrange(-50,-20)
 
     # Add the alien to the list of objects
     alien_list.add(alien)
@@ -107,23 +97,6 @@ rect_y = 50  # position of rectangle
 rect_change_x = 5  # vector direction and speed
 rect_change_y = 3  # vector direction and speed
 
-star_list = []
-for i in range(50):
-    x = random.randrange(0, 700)
-    y = random.randrange(0, 500)
-    star_list.append([x, y])
-
-
-def draw_tree():
-    pygame.draw.rect(screen, BROWN, [60, 400, 30, 45])
-    pygame.draw.polygon(screen, GREEN, [[150, 400], [75, 250], [0, 400]])
-    pygame.draw.polygon(screen, GREEN, [[140, 350], [75, 230], [10, 350]])
-
-
-def draw_snowman(screen, x, y):
-    pygame.draw.ellipse(screen, WHITE, [35 + x, 0 + y, 25, 25])
-    pygame.draw.ellipse(screen, WHITE, [23 + x, 20 + y, 50, 50])
-    pygame.draw.ellipse(screen, WHITE, [0 + x, 65 + y, 100, 100])
 
 
 def draw_person(screen, x, y):
@@ -144,71 +117,6 @@ y_speed = 0
 background_image = pygame.image.load("space_image.jpg").convert()
 laser_sound = pygame.mixer.Sound("laser5.ogg")
 
-
-class Ball():
-    def __init__(self):
-        # --- Class Attributes ---
-        # Ball position
-        self.x = 0
-        self.y = 0
-
-        # Ball's vector
-        self.change_x = 0
-        self.change_y = 0
-
-        # Ball size
-        self.size = 10
-
-        # Ball color
-        self.color = [255, 255, 255]
-
-    # --- Class Methods ---
-    def move(self):
-        self.x += self.change_x
-        self.y += self.change_y
-
-    def draw(self, screen):
-        pygame.draw.circle(screen, self.color, [self.x, self.y], self.size)
-
-
-theBall = Ball()
-theBall.x = 100
-theBall.y = 100
-theBall.change_x = 2
-theBall.change_y = 1
-theBall.color = [255, 0, 0]
-
-
-class Boat():
-    def __init__(self):
-        self.tonnage = 0
-        self.name = ""
-        self.is_docked = True
-
-    def dock(self):
-        if self.is_docked:
-            print("You are already docked.")
-        else:
-            self.is_docked = True
-            print("Docking")
-
-    def undock(self):
-        if not self.is_docked:
-            print("You aren't docked.")
-        else:
-            self.is_docked = False
-            print("Undocking")
-
-
-enterprise2 = Boat()
-enterprise2.tonnage = 100
-
-
-# inheritance - each of the attributes from the Boat class is inherited by the submarine class
-# child class
-class Submarine(Boat):
-    def submerge(self):
-        print("submerge")
 
 
 player = Player(GREEN, 20, 20)
@@ -236,6 +144,7 @@ frame_rate = 60
 start_time = 180
 minutes = 1000
 seconds = 1000
+total_seconds = 1000
 
 
 # -------- Main Program Loop -----------
@@ -295,7 +204,6 @@ while not done:
     x_coord += x_speed
     y_coord += y_speed
 
-    theBall.move()
 
     # --- Screen-clearing code goes here
 
@@ -306,8 +214,22 @@ while not done:
     # background image.
     screen.blit(background_image, [0, 0])
 
+    if frame_count % 1 == 0:
+        # set a random location for the aliens
+        alien.rect.x = random.randrange(20,680)
+        alien.rect.y = random.randrange(-50,-20)
+
+        # Add the alien to the list of objects
+        alien_list.add(alien)
+        all_sprites_list.add(alien)
+
+        if alien.rect.y > 449:
+            alien.rect.y *= -1
+
+
     # Call the update() method on all the sprites
     all_sprites_list.update()
+
 
     # Call the mechanics of each bullet
     for bullet in bullet_list:
@@ -336,8 +258,11 @@ while not done:
         print("Life: ", life)
         alien.reset_pos()
 
+
+
     # Draw the sprites
     all_sprites_list.draw(screen)
+
 
     # for item in star_list:
     #     item[1] += 1
@@ -348,7 +273,6 @@ while not done:
 
     # --- Drawing code should go here
     pygame.draw.rect(screen, WHITE, [rect_x, rect_y, 50, 50], 2)
-    theBall.draw(screen)
     # draw_tree()
 
     # Draw multiple snowmen
@@ -396,7 +320,7 @@ while not done:
 
     # ALL CODE TO DRAW SHOULD GO ABOVE THIS COMMENT
     frame_count += 1
-
+    print(alien_list)
     clock.tick(frame_rate)
 
     # --- Go ahead and update the screen with what we've drawn.
