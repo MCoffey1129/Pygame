@@ -35,16 +35,64 @@ class Alien(pygame.sprite.Sprite):
 
     def update(self):
         self.rect.y += 1
-        self.rect.x += random.randrange(-8,8,1)
+        self.rect.x += random.randrange(-8,9,1)
 
         if self.rect.y > 550:
             self.reset_pos()
 
 
+# Position of our player
 class Player(Alien):
     def update(self):
         self.rect.x = self.rect.x + x_speed
         self.rect.y = self.rect.y + y_speed
+
+class Alien_horiz(pygame.sprite.Sprite):
+    def __init__(self, color, width, height):
+        # call the parent
+        pygame.sprite.Sprite.__init__(self)
+
+        # Blank surface to draw on
+        self.image = pygame.Surface([width, height])
+        self.image.fill(color)
+
+        # Create a rectangle - set it to whatever the image is
+        self.rect = self.image.get_rect()
+
+    def reset_pos(self):
+        self.rect.y = random.randrange(350,500)
+        self.rect.x = random.randrange(700,750)
+
+    def update(self):
+        self.rect.y += 0
+        self.rect.x += -3
+
+        if self.rect.x < -0:
+            self.reset_pos()
+
+class Alien_boss(pygame.sprite.Sprite):
+    def __init__(self, color, width, height):
+        # call the parent
+        pygame.sprite.Sprite.__init__(self)
+
+        # Blank surface to draw on
+        self.image = pygame.Surface([width, height])
+        self.image.fill(color)
+
+        # Create a rectangle - set it to whatever the image is
+        self.rect = self.image.get_rect()
+
+    def reset_pos(self):
+        self.rect.y = -20
+        self.rect.x = random.randrange(680)
+
+    def update(self):
+        self.rect.y += 3
+        self.rect.x += random.randrange(-10,11,1)
+
+        if self.rect.y > 550:
+            self.reset_pos()
+
 
 
 class Bullet(pygame.sprite.Sprite):
@@ -73,6 +121,12 @@ screen = pygame.display.set_mode(size)
 # List of aliens
 alien_list = pygame.sprite.Group()
 
+# List of aliens
+alien_horiz_list = pygame.sprite.Group()
+
+# List of alien bosses
+alien_boss_list = pygame.sprite.Group()
+
 # List of all aliens and the player as well
 all_sprites_list = pygame.sprite.Group()
 
@@ -89,6 +143,26 @@ for i in range(50):
     # Add the alien to the list of objects
     alien_list.add(alien)
     all_sprites_list.add(alien)
+
+
+for i in range(5):
+    alien_boss = Alien_boss(GREEN, 20, 20)
+    alien_horiz = Alien_horiz(BROWN,20,20)
+
+    # set a random location for the aliens
+    alien_boss.rect.x = random.randrange(680)
+    alien_boss.rect.y = random.randrange(-50,-20)
+
+    # set a random location for the aliens
+    alien_horiz.rect.x = random.randrange(350, 480)
+    alien_horiz.rect.y = random.randrange(700,750)
+
+    # Add the alien to the list of objects
+    alien_boss_list.add(alien_boss)
+    all_sprites_list.add(alien_boss)
+
+    alien_horiz_list.add(alien_horiz)
+    all_sprites_list.add(alien_horiz)
 
 # Initiate the positions of objects
 rect_x = 50  # position of rectangle
@@ -214,6 +288,9 @@ while not done:
     # background image.
     screen.blit(background_image, [0, 0])
 
+    # Call the update() method on all the sprites
+    all_sprites_list.update()
+
     if frame_count % 1 == 0:
         # set a random location for the aliens
         alien.rect.x = random.randrange(20,680)
@@ -223,12 +300,7 @@ while not done:
         alien_list.add(alien)
         all_sprites_list.add(alien)
 
-        if alien.rect.y > 449:
-            alien.rect.y *= -1
 
-
-    # Call the update() method on all the sprites
-    all_sprites_list.update()
 
 
     # Call the mechanics of each bullet
@@ -242,6 +314,26 @@ while not done:
             bullet_list.remove(bullet)
             all_sprites_list.remove(bullet)
             score += 100
+            print("Score :", score)
+
+        # See if it hit an alien
+        alien_horiz_hit_list = pygame.sprite.spritecollide(bullet, alien_horiz_list, True)
+
+        # For each alien hit, remove the bullet and add to the score
+        for alien in alien_horiz_hit_list:
+            bullet_list.remove(bullet)
+            all_sprites_list.remove(bullet)
+            score += 200
+            print("Score :", score)
+
+        # See if it hit an alien
+        alien_boss_hit_list = pygame.sprite.spritecollide(bullet, alien_boss_list, True)
+
+        # For each alien hit, remove the bullet and add to the score
+        for alien in alien_boss_hit_list:
+            bullet_list.remove(bullet)
+            all_sprites_list.remove(bullet)
+            score += 500
             print("Score :", score)
 
         # Remove the bullet if it flies off the screen
@@ -259,32 +351,32 @@ while not done:
         alien.reset_pos()
 
 
+    alien_horiz_hit_list = pygame.sprite.spritecollide(player, alien_horiz_list, False)
 
+    # Check the list of collisions
+    for alien_horiz in alien_horiz_hit_list:
+        life -= len(alien_horiz_hit_list) * 10
+        print("Life: ", life)
+        alien_horiz.reset_pos()
+
+    alien_boss_hit_list = pygame.sprite.spritecollide(player, alien_boss_list, False)
+
+    # Check the list of collisions
+    for alien_boss in alien_boss_hit_list:
+        life -= len(alien_boss_hit_list) * 10
+        print("Life: ", life)
+        alien_boss.reset_pos()
+
+
+    # --- Drawing code
     # Draw the sprites
     all_sprites_list.draw(screen)
 
 
-    # for item in star_list:
-    #     item[1] += 1
-    #     pygame.draw.circle(screen, WHITE, item, 2)
-    #     if item[1] > 500:
-    #         item[1] = random.randrange(-20,-5)
-    #         item[0] = random.randrange(700)
-
-    # --- Drawing code should go here
     pygame.draw.rect(screen, WHITE, [rect_x, rect_y, 50, 50], 2)
-    # draw_tree()
 
-    # Draw multiple snowmen
-    # draw_snowman(screen,200,100)
-    # draw_snowman(screen, 80, 40)
-    # draw_snowman(screen, 25, 90)
-
-    # draw_person(screen,200,200)
+    # Draw character
     draw_person(screen, x_coord, y_coord)
-    # draw_person(screen, 400, 400)
-    # draw_person(screen, 500, 500)
-    # draw_person(screen, 600, 400)
 
 
     # --- Limit to 60 frames per second
@@ -320,7 +412,6 @@ while not done:
 
     # ALL CODE TO DRAW SHOULD GO ABOVE THIS COMMENT
     frame_count += 1
-    print(alien_list)
     clock.tick(frame_rate)
 
     # --- Go ahead and update the screen with what we've drawn.
