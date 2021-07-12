@@ -174,13 +174,13 @@ rect_change_y = 3  # vector direction and speed
 
 
 def draw_person(screen, x, y):
-    pygame.draw.ellipse(screen, WHITE, [96 - 95 + x, 83 - 83 + y, 10, 10], 0)  # Head
-    pygame.draw.line(screen, WHITE, [100 - 95 + x, 100 - 83 + y], [105 - 95 + x, 110 - 83 + y], 2)  # Legs
-    pygame.draw.line(screen, WHITE, [100 - 95 + x, 100 - 83 + y], [95 - 95 + x, 110 - 83 + y], 2)  # Legs
-    pygame.draw.line(screen, RED, [100 - 95 + x, 100 - 83 + y], [100 - 95 + x, 90 - 83 + y], 2)  # Body
-    pygame.draw.line(screen, RED, [100 - 95 + x, 90 - 83 + y], [104 - 95 + x, 100 - 83 + y], 2)  # Arms
-    pygame.draw.line(screen, RED, [100 - 95 + x, 90 - 83 + y], [96 - 95 + x, 100 - 83 + y], 2)  # Arms
-
+    pygame.draw.ellipse(screen, WHITE, [1 + x, 0 + y, 10, 10], 0)  # Head
+    pygame.draw.line(screen, WHITE, [5 + x, 17 + y], [10 + x, 27 + y], 2)  # Legs
+    pygame.draw.line(screen, WHITE, [5 + x, 17 + y], [0 + x, 27 + y], 2)  # Legs
+    pygame.draw.line(screen, RED, [5 + x, 17 + y], [5 + x, 7 + y], 2)  # Body
+    pygame.draw.line(screen, RED, [5 + x, 10 + y], [9 + x, 17 + y], 2)  # Arms
+    pygame.draw.line(screen, RED, [5 + x, 10 + y], [-3 + x, 10 + y], 2)  # Arms
+    pygame.draw.line(screen, GREEN, [-3 + x, 10 + y], [-3 + x, -2 + y], 2)  # Arms
 
 x_coord = 350
 y_coord = 250
@@ -193,7 +193,7 @@ laser_sound = pygame.mixer.Sound("laser5.ogg")
 
 
 
-player = Player(GREEN, 20, 20)
+player = Player(GREEN, 1, 1)
 player.rect.x = 350
 player.rect.y = 250
 all_sprites_list.add(player)
