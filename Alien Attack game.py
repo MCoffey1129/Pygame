@@ -60,7 +60,7 @@ class Alien_horiz(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
     def reset_pos(self):
-        self.rect.y = random.randrange(350,500)
+        self.rect.y = random.randrange(0,500)
         self.rect.x = random.randrange(700,750)
 
     def update(self):
@@ -87,7 +87,7 @@ class Alien_boss(pygame.sprite.Sprite):
         self.rect.x = random.randrange(680)
 
     def update(self):
-        self.rect.y += 3
+        self.rect.y += 2
         self.rect.x += random.randrange(-10,11,1)
 
         if self.rect.y > 550:
@@ -145,7 +145,7 @@ for i in range(50):
     all_sprites_list.add(alien)
 
 
-for i in range(5):
+for i in range(8):
     alien_boss = Alien_boss(GREEN, 20, 20)
     alien_horiz = Alien_horiz(BROWN,20,20)
 
@@ -154,7 +154,7 @@ for i in range(5):
     alien_boss.rect.y = random.randrange(-50,-20)
 
     # set a random location for the aliens
-    alien_horiz.rect.x = random.randrange(350, 480)
+    alien_horiz.rect.x = random.randrange(0, 500)
     alien_horiz.rect.y = random.randrange(700,750)
 
     # Add the alien to the list of objects
