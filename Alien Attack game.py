@@ -17,14 +17,30 @@ RED = (255, 0, 0)
 BROWN = (180, 0, 30)
 
 
+# Initialise the game
+pygame.init()
+
+# Set the width and height of the screen [width, height]
+size = (700, 500)
+screen = pygame.display.set_mode(size)
+
+# Load images
+background_image = pygame.image.load("space_image.jpg").convert()
+blue_alien = pygame.image.load("blue_alien.png").convert()
+green_alien = pygame.image.load("green_alien.png").convert()
+pink_alien = pygame.image.load("pink_alien.png").convert()
+laser_sound = pygame.mixer.Sound("laser5.ogg")
+
+
+
+
 class Alien(pygame.sprite.Sprite):
-    def __init__(self, color, width, height):
+    def __init__(self):
         # call the parent
         pygame.sprite.Sprite.__init__(self)
 
         # Blank surface to draw on
-        self.image = pygame.Surface([width, height])
-        self.image.fill(color)
+        self.image = blue_alien
 
         # Create a rectangle - set it to whatever the image is
         self.rect = self.image.get_rect()
@@ -41,20 +57,14 @@ class Alien(pygame.sprite.Sprite):
             self.reset_pos()
 
 
-# Position of our player
-class Player(Alien):
-    def update(self):
-        self.rect.x = self.rect.x + x_speed
-        self.rect.y = self.rect.y + y_speed
 
 class Alien_horiz(pygame.sprite.Sprite):
-    def __init__(self, color, width, height):
+    def __init__(self):
         # call the parent
         pygame.sprite.Sprite.__init__(self)
 
         # Blank surface to draw on
-        self.image = pygame.Surface([width, height])
-        self.image.fill(color)
+        self.image = green_alien
 
         # Create a rectangle - set it to whatever the image is
         self.rect = self.image.get_rect()
@@ -71,13 +81,12 @@ class Alien_horiz(pygame.sprite.Sprite):
             self.reset_pos()
 
 class Alien_boss(pygame.sprite.Sprite):
-    def __init__(self, color, width, height):
+    def __init__(self):
         # call the parent
         pygame.sprite.Sprite.__init__(self)
 
         # Blank surface to draw on
-        self.image = pygame.Surface([width, height])
-        self.image.fill(color)
+        self.image = pink_alien
 
         # Create a rectangle - set it to whatever the image is
         self.rect = self.image.get_rect()
@@ -93,7 +102,22 @@ class Alien_boss(pygame.sprite.Sprite):
         if self.rect.y > 550:
             self.reset_pos()
 
+# Position of our player
+class Player(pygame.sprite.Sprite):
+    def __init__(self, color, width, height):
+        # call the parent
+        pygame.sprite.Sprite.__init__(self)
 
+        # Blank surface to draw on
+        self.image = pygame.Surface([width, height])
+        self.image.fill(color)
+
+        # Create a rectangle - set it to whatever the image is
+        self.rect = self.image.get_rect()
+
+    def update(self):
+        self.rect.x = self.rect.x + x_speed
+        self.rect.y = self.rect.y + y_speed
 
 class Bullet(pygame.sprite.Sprite):
 
@@ -101,8 +125,8 @@ class Bullet(pygame.sprite.Sprite):
         # Call the parent class (Sprite) constructor
         pygame.sprite.Sprite.__init__(self)
 
-        self.image = pygame.Surface([5, 5])
-        self.image.fill(RED)
+        self.image = pygame.Surface([2, 5])
+        self.image.fill(GREEN)
 
         self.rect = self.image.get_rect()
 
@@ -110,13 +134,6 @@ class Bullet(pygame.sprite.Sprite):
         # move the bullet up 5 pixels
         self.rect.y -= 5
 
-
-# Initialise the game
-pygame.init()
-
-# Set the width and height of the screen [width, height]
-size = (700, 500)
-screen = pygame.display.set_mode(size)
 
 # List of aliens
 alien_list = pygame.sprite.Group()
@@ -134,7 +151,7 @@ all_sprites_list = pygame.sprite.Group()
 bullet_list = pygame.sprite.Group()
 
 for i in range(50):
-    alien = Alien(RED, 20, 20)
+    alien = Alien()
 
     # set a random location for the aliens
     alien.rect.x = random.randrange(680)
@@ -146,8 +163,8 @@ for i in range(50):
 
 
 for i in range(8):
-    alien_boss = Alien_boss(GREEN, 20, 20)
-    alien_horiz = Alien_horiz(BROWN,20,20)
+    alien_boss = Alien_boss()
+    alien_horiz = Alien_horiz()
 
     # set a random location for the aliens
     alien_boss.rect.x = random.randrange(680)
@@ -180,7 +197,7 @@ def draw_person(screen, x, y):
     pygame.draw.line(screen, RED, [5 + x, 17 + y], [5 + x, 7 + y], 2)  # Body
     pygame.draw.line(screen, RED, [5 + x, 10 + y], [9 + x, 17 + y], 2)  # Arms
     pygame.draw.line(screen, RED, [5 + x, 10 + y], [-3 + x, 10 + y], 2)  # Arms
-    pygame.draw.line(screen, GREEN, [-3 + x, 10 + y], [-3 + x, -2 + y], 2)  # Arms
+    pygame.draw.line(screen, GREEN, [-3 + x, 10 + y], [-3 + x, -2 + y], 2)  # Wand/sword/lightsaber
 
 x_coord = 350
 y_coord = 250
@@ -188,12 +205,10 @@ y_coord = 250
 x_speed = 0
 y_speed = 0
 
-background_image = pygame.image.load("space_image.jpg").convert()
-laser_sound = pygame.mixer.Sound("laser5.ogg")
 
 
 
-player = Player(GREEN, 1, 1)
+player = Player(BLACK, 20, 20)
 player.rect.x = 350
 player.rect.y = 250
 all_sprites_list.add(player)
@@ -371,9 +386,6 @@ while not done:
     # --- Drawing code
     # Draw the sprites
     all_sprites_list.draw(screen)
-
-
-    pygame.draw.rect(screen, WHITE, [rect_x, rect_y, 50, 50], 2)
 
     # Draw character
     draw_person(screen, x_coord, y_coord)
