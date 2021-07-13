@@ -3,7 +3,7 @@ Alien Attack Pygame (similar to Space Invaders)
 
 Summary
 --
-Please find attached pygame code for running a game called "Alien Attack." The game is quite similar in nature to "Space Invaders."   
+Please find attached pygame code for running a game I created called "Alien Attack." The game is quite similar in nature to "Space Invaders."   
 The purpose of creating this code is to try and train a Neural Network to play the game and get a 
 higher score than the 5 random scores I got when playing the game. 
 
