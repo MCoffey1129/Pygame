@@ -4,10 +4,15 @@
 
 # Packages
 import random
-import numpy as np
+import pandas as pd
 import pygame
 import matplotlib.pyplot as plt
-import  numpy as np
+import seaborn as sns
+from datetime import datetime
+import pandas as pd
+
+now = datetime.now()
+player_name = 'MC'
 
 # Define some colors
 BLACK = (0, 0, 0)
@@ -434,9 +439,21 @@ while not done:
 # Close the window and quit.
 pygame.quit()
 
-plt.plot(life_list)
-plt.plot(score_list)
+# Plot the score by time
+sns.set()
+_= plt.plot(score_list)
+_= plt.xlabel('Time')
+_= plt.ylabel('Score')
+_= plt.title('Score through time', fontsize=24)
 plt.show()
 
-# score_list[len(score_list)-1]
+# Create the scoring include the name and score
+# lst = [[now.strftime("%d/%m/%Y %H:%M:%S"), player_name, score]]
+# new_score_df = pd.DataFrame(lst, columns=['time', 'player_name', 'score'])
+#
+#
+# top_score = pd.read_csv(r'top_score.csv',index_col=0)
+# top_score_upd = pd.concat([top_score, new_score_df],ignore_index=True)
+# top_score_upd.sort_values(by='score', ascending=False, inplace=True)
+# top_score_upd.to_csv(r'top_score.csv', index=True, header=True)
 
