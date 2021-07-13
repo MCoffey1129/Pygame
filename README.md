@@ -15,6 +15,11 @@ to create the game without the following excellent website -  http://programarca
 How to play the game
 ===
 
+Set up
+---
+Save the code and each of the attached files to the same location on your drive, import the required packages and run the code. 
+If this does not work please let me know. 
+
 Controls
 --
 Mouse - Shoot  
