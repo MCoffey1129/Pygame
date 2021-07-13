@@ -8,7 +8,7 @@ The purpose of creating this code is to try and train a Neural Network to play t
 higher score than the 5 random scores I got when playing the game. 
 
 For anyone interested please feel free to take my code and create your own game. The code is quite heavily commented 
-but I am happy to answer any questions anyone may have. Please note it would not have been possible
+but I am happy to answer any questions you may have. Please note it would not have been possible
 to create the game without the following excellent website -  http://programarcadegames.com/index.php?lang=en.
 
 
